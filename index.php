@@ -22,6 +22,9 @@
 * Index page
 */
 
+require_one('config/constants.php');
+require_one('config/config.php');
+
 $htmlOutput = null;
 $pages = array("wifi", "svx", "sa", "log");
 $page = (null !== filter_input(INPUT_GET, 'p', FILTER_SANITIZE_SPECIAL_CHARS)) ? $_GET['p'] : '';
@@ -134,8 +137,7 @@ switch ($page) {
 			<div id="sysmsg"></div>
 		</div>
 		<footer class="page-footer fixed-bottom font-small bg-light">
-			<div class="text-center p-2">
-v0.3 © 2021 Copyright <a class="text-primary" href="https://www.xpander.ro/">Razvan / YO6NAM</a>
+			<div class="text-center p-2">v0.3 © <?php echo date('Y'); ?> Copyright <a class="text-primary" href="https://www.xpander.ro/">Razvan / YO6NAM</a>
 			</div>
 		</footer>
         <script src="js/jquery.js"></script>

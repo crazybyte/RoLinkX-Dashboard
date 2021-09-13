@@ -22,9 +22,14 @@
 * SVXLink configuration module
 */
 
-$cfgFile		= '/opt/rolink/conf/rolink.conf';
-$newFile		= '/tmp/rolink.conf.tmp';
-$profilesPath	= dirname(__FILE__) . '/../profiles/';
+require_one('config/constants.php');
+require_one('config/config.php');
+
+
+$cfgFile		= APP_CONFIG_PATH . DS . ROLINK_APP_CONFIG;
+$newFile		= ROLINK_APP_TMP . DS . 'rolink.conf.tmp';
+$profilesPath	= ROLINK_APP_PROFILES . '/';
+
 $newProfile		= false;
 $changes		= 0;
 $msgOut			= NULL;
@@ -154,22 +159,23 @@ if (!empty($frmDelProfile)) {
  	exit(0);
 }
 
+
 // Compare current stored values vs new values from form
 if ($changes > 0) {
-	// Stop SVXLink service before attempting anything
-	shell_exec('/usr/bin/sudo /usr/bin/systemctl stop rolink.service');
-	$newCfg = preg_replace($oldVar, $newVar, $oldCfg);
-	sleep(1);
-	file_put_contents($newFile, $newCfg);
-	shell_exec("sudo /usr/bin/cp $newFile /opt/rolink/conf/rolink.conf");
-	$msgOut .= 'Configuration updated ('. $changes .' change(s) applied)<br/>Restarting RoLink service...';
-	$msgOut .= ($newProfile) ? '<br/>Profile saved as ' . basename($proFileName, '.json') : '';
+    // Stop SVXLink service before attempting anything
+    shell_exec(TOOLS_SUDO . ' ' . TOOLS_SYSTEMCTL . ' stop ' . ROLINK_APP_SERVICE);
+    $newCfg = preg_replace($oldVar, $newVar, $oldCfg);
+    sleep(1);
+    file_put_contents($newFile, $newCfg);
+    shell_exec(TOOLS_SUDO . ' ' . TOOLS_CP . ' ' . $newFile . ' ' . APP_CONFIG_PATH . DS . APP_CONFIG);
+    $msgOut .= 'Configuration updated ('. $changes .' change(s) applied)<br/>Restarting RoLink service...';
+    $msgOut .= ($newProfile) ? '<br/>Profile saved as ' . basename($proFileName, '.json') : '';
 
-	// All done, start SVXLink service
-	shell_exec('/usr/bin/sudo /usr/bin/systemctl start rolink.service');
+    // All done, start SVXLink service
+    shell_exec(TOOLS_SUDO . ' ' . TOOLS_SYSTEMCTL . ' start ' . ROLINK_APP_SERVICE);
 } else {
-	$msgOut .= 'No new data to process.<br/>Keeping original configuration.';
-	$msgOut .= ($newProfile) ? '<br/>Profile saved as ' . basename($proFileName, '.json') : '';
+    $msgOut .= 'No new data to process.<br/>Keeping original configuration.';
+    $msgOut .= ($newProfile) ? '<br/>Profile saved as ' . basename($proFileName, '.json') : '';
 }
 
 echo $msgOut;
