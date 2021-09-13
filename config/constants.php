@@ -16,6 +16,10 @@ $constants = array(
         'SUDO' => '/usr/bin/sudo',
         'SYSTEMCTL' => '/usr/bin/systemctl',
         'CP' => '/usr/bin/cp',
+        'WC' => '/usr/bin/wc',
+        'TAIL' => '/usr/bin/tail',
+        'CUT' => '/usr/bin/cut',
+        'TR' => '/usr/bin/tr',
     ),
 );
 

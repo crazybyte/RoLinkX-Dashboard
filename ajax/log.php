@@ -21,24 +21,19 @@
 /*
 * Log(s) page
 */
+require_one('config/constants.php');
+require_one('config/config.php');
+
 header("Cache-Control: no-cache");
 $num		= (isset($_GET['n'])) ? filter_input(INPUT_GET, 'n', FILTER_SANITIZE_NUMBER_INT) : 0;
 $log_file	= (!empty($_GET['t'])) ? filter_input(INPUT_GET, 't', FILTER_SANITIZE_NUMBER_INT) : NULL;
-switch ($log_file) {
-	case '1' :
-		$logfile = '/var/log/syslog';
-	break;
-	case '2' :
-		$logfile = '/tmp/svxlink.log';
-	break;
-	default :
-		$logfile = '/var/log/syslog';
-}
-$wc = "/usr/bin/wc";
-$sudo = "/usr/bin/sudo";
-$tail = "/usr/bin/tail";
-$cut = "/usr/bin/cut";
-$tr = "/usr/bin/tr";
+
+$logfile = get_log_file($log_file);
+$wc = TOOLS_WC;
+$sudo = TOOLS_SUDO;
+$tail = TOOLS_TAIL;
+$cut = TOOLS_CUT;
+$tr = TOOLS_TR;
 
 if (!$num) {
 	$file_len = shell_exec("$sudo $wc -l $logfile | $cut -d \" \" -f 1 | $tr -d '\n' 2>/dev/null");
